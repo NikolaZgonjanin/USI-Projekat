@@ -39,16 +39,18 @@ class SupportRequest extends Model
 
     /**
      * Korisnik koji je kreirao prijavu.
+     * Ovu relaciju koristimo pod imenom createdBy u kontroleru i view-ovima.
      */
-    public function author(): BelongsTo
+    public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
     /**
      * Inženjer dodeljen na prijavu (može biti null).
+     * Ovu relaciju koristimo pod imenom assignedTo u kontroleru i view-ovima.
      */
-    public function assignee(): BelongsTo
+    public function assignedTo(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
