@@ -7,7 +7,6 @@ Ovaj projekat predstavlja Laravel veb aplikaciju za kompaniju koja razvija firmv
 
 [![Laravel](https://img.shields.io/badge/Laravel-12.x-red.svg)](https://laravel.com)
 [![PHP](https://img.shields.io/badge/PHP-8.2+-blue.svg)](https://php.net)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/tests-30%20passed-brightgreen.svg)](tests)
 
 ---
