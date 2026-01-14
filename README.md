@@ -1,6 +1,7 @@
 # Vebsajt za upravljanje verzijama firmvera
 
 **Ime:** Nikola Zgonjanin
+
 **Indeks:** 77/22 IT
 
 Ovaj projekat predstavlja Laravel veb aplikaciju za kompaniju koja razvija firmver za klijent. Urađena je kao drugi kolokvijum za predmet Uvod u softversko inženjerstvo.
