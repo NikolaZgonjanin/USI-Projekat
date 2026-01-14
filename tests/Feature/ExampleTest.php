@@ -14,6 +14,7 @@ class ExampleTest extends TestCase
     {
         $response = $this->get('/');
 
-        $response->assertStatus(200);
+        // Početna ruta preusmerava na login ili projekte, pa očekujemo redirect (302).
+        $response->assertStatus(302);
     }
 }

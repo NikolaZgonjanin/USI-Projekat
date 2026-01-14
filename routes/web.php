@@ -8,7 +8,13 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    // Ako korisnik nije ulogovan, preusmeravamo ga na login stranicu.
+    if (! auth()->check()) {
+        return redirect()->route('login');
+    }
+
+    // Ulogovani korisnici idu direktno na listu projekata.
+    return redirect()->route('projects.index');
 });
 
 Route::get('/dashboard', function () {
