@@ -65,13 +65,22 @@ class FirmwareVersionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(FirmwareVersion $firmwareVersion): View
+    public function show(Request $request, FirmwareVersion $firmwareVersion): View
     {
         $this->authorize('view', $firmwareVersion);
 
-        $firmwareVersion->load(['project', 'documentations', 'supportRequests.createdBy', 'supportRequests.assignedTo']);
+        $showHidden = $request->boolean('show_hidden', false);
 
-        return view('firmware-versions.show', compact('firmwareVersion'));
+        $firmwareVersion->load(['project', 'documentations']);
+
+        // Učitaj prijave sa filterom
+        $supportRequestsQuery = $firmwareVersion->supportRequests()->with(['createdBy', 'assignedTo']);
+        if (! $showHidden) {
+            $supportRequestsQuery->whereNotIn('status', ['denied', 'closed']);
+        }
+        $supportRequests = $supportRequestsQuery->latest()->get();
+
+        return view('firmware-versions.show', compact('firmwareVersion', 'supportRequests', 'showHidden'));
     }
 
     /**

@@ -19,28 +19,33 @@ class SupportRequestController extends Controller
     public function index(Request $request): View
     {
         $user = $request->user();
+        $showHidden = $request->boolean('show_hidden', false);
 
+        $baseQuery = null;
         if ($user->isAdmin()) {
-            $supportRequests = SupportRequest::with(['firmwareVersion.project', 'createdBy', 'assignedTo'])
-                ->latest()
-                ->paginate(15);
+            $baseQuery = SupportRequest::query();
         } elseif ($user->isEngineer()) {
             // Inženjeri vide sve prijave za projekte kojima imaju pristup
             $projectIds = $user->projects()->pluck('projects.id');
             $firmwareVersionIds = FirmwareVersion::whereIn('project_id', $projectIds)->pluck('id');
-            $supportRequests = SupportRequest::whereIn('firmware_version_id', $firmwareVersionIds)
-                ->with(['firmwareVersion.project', 'createdBy', 'assignedTo'])
-                ->latest()
-                ->paginate(15);
+            $baseQuery = SupportRequest::whereIn('firmware_version_id', $firmwareVersionIds);
         } else {
             // Klijenti vide samo svoje prijave
-            $supportRequests = $user->createdSupportRequests()
-                ->with(['firmwareVersion.project', 'createdBy', 'assignedTo'])
-                ->latest()
-                ->paginate(15);
+            $baseQuery = $user->createdSupportRequests();
         }
 
-        return view('support-requests.index', compact('supportRequests'));
+        // Po defaultu sakrij denied i closed prijave
+        if (! $showHidden) {
+            $baseQuery->whereNotIn('status', ['denied', 'closed']);
+        }
+
+        $supportRequests = $baseQuery
+            ->with(['firmwareVersion.project', 'createdBy', 'assignedTo'])
+            ->latest()
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('support-requests.index', compact('supportRequests', 'showHidden'));
     }
 
     /**
