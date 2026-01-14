@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('support_requests', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('firmware_version_id')->constrained();
-            $table->foreignId('created_by')->constrained('users');
-            $table->foreignId('assigned_to')->nullable()->constrained('users');
+            $table->foreignId('firmware_version_id')->constrained()->onDelete('cascade');
+            $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
+            $table->foreignId('assigned_to')->nullable()->constrained('users')->onDelete('set null');
             $table->string('title');
             $table->enum('status', ['pending', 'accepted', 'denied', 'closed'])->default('pending');
             $table->text('request_text');

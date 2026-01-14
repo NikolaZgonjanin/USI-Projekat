@@ -110,6 +110,17 @@ class UserController extends Controller
     {
         $this->authorize('delete', $user);
 
+        // Obriši sve veze pre brisanja korisnika
+        // 1. Ukloni pristup projektima
+        $user->projects()->detach();
+
+        // 2. Ažuriraj prijave grešaka gde je korisnik kreirao prijavu (postavi created_by na null ili obriši prijave)
+        $user->createdSupportRequests()->delete();
+
+        // 3. Ažuriraj prijave grešaka gde je korisnik dodeljen (postavi assigned_to na null)
+        $user->assignedSupportRequests()->update(['assigned_to' => null]);
+
+        // 4. Obriši korisnika
         $user->delete();
 
         return redirect()->route('users.index')
