@@ -1,6 +1,9 @@
-# 🔧 Firmware Management System
+# Vebsajt za upravljanje verzijama firmvera
 
-> Laravel veb aplikacija za upravljanje verzijama firmvera i prijavama grešaka
+**Ime:** Nikola Zgonjanin
+**Indeks:** 77/22 IT
+
+Ovaj projekat predstavlja Laravel veb aplikaciju za kompaniju koja razvija firmver za klijent. Urađena je kao drugi kolokvijum za predmet Uvod u softversko inženjerstvo.
 
 [![Laravel](https://img.shields.io/badge/Laravel-12.x-red.svg)](https://laravel.com)
 [![PHP](https://img.shields.io/badge/PHP-8.2+-blue.svg)](https://php.net)
@@ -13,18 +16,18 @@
 
 Sistem za upravljanje firmver verzijama i prijavama grešaka, razvijen za kompaniju koja proizvodi firmver za klijente. Aplikacija omogućava evidenciju verzija, preuzimanje firmvera, vođenje prijava grešaka i upravljanje korisnicima sa različitim ulogama.
 
-### ✨ Ključne funkcionalnosti
+### Ključne funkcionalnosti
 
-- 👥 **Upravljanje korisnicima** - Administratori mogu kreirati, uređivati i brisati korisnike sa različitim ulogama
-- 📦 **Upravljanje projektima** - Kreiranje i upravljanje projektima firmvera
-- 🔄 **Verzije firmvera** - Dodavanje novih verzija, praćenje changelog-a i stabilnosti
-- 🐛 **Prijave grešaka** - Sistem za prijavu i praćenje problema sa firmver verzijama
-- 🔐 **Autorizacija** - Role-based access control (RBAC) sa tri uloge: administrator, inženjer, klijent
-- 📥 **Preuzimanje firmvera** - Download funkcionalnost za stabilne verzije
+- **Upravljanje korisnicima** - Administratori mogu kreirati, uređivati i brisati korisnike sa različitim ulogama
+- **Upravljanje projektima** - Kreiranje i upravljanje projektima firmvera
+- **Verzije firmvera** - Dodavanje novih verzija, praćenje changelog-a i stabilnosti
+- **Prijave grešaka** - Sistem za prijavu i praćenje problema sa firmver verzijama
+- **Autorizacija** - Role-based access control (RBAC) sa tri uloge: administrator, inženjer, klijent
+- **Preuzimanje firmvera** - Download funkcionalnost za stabilne verzije
 
 ---
 
-## 🛠️ Tehnologije
+## Tehnologije
 
 | Tehnologija | Verzija | Svrha |
 |------------|---------|-------|
@@ -39,7 +42,7 @@ Sistem za upravljanje firmver verzijama i prijavama grešaka, razvijen za kompan
 
 ---
 
-## 📁 Struktura projekta
+## Struktura projekta
 
 ```
 USI-Projekat/
@@ -77,7 +80,7 @@ USI-Projekat/
 
 ---
 
-## 🗄️ Modeli i relacije
+## Modeli i relacije
 
 ### Glavni modeli
 
@@ -91,7 +94,7 @@ USI-Projekat/
 
 ---
 
-## 🚀 Use-case rute
+## Use-case rute
 
 ### UC1: Prijava problema
 ```
@@ -115,7 +118,7 @@ Klijenti i inženjeri mogu preuzeti stabilne verzije firmvera.
 
 ---
 
-## 🔐 Autorizacija i uloge
+##  Autorizacija i uloge
 
 | Uloga | Dozvole |
 |-------|---------|
@@ -127,7 +130,7 @@ Autorizacija je implementirana kroz **Laravel Policies** i **middleware** prover
 
 ---
 
-## 🧪 Testiranje
+## Testiranje
 
 ```bash
 # Pokretanje svih testova
@@ -139,9 +142,9 @@ php artisan test --filter FirmwareVersionTest
 ```
 
 **Test statistika:**
-- ✅ 30 testova
-- ✅ 76 asercija
-- ✅ 100% prolaznost
+- 30 testova
+- 76 asercija
+- 100% prolaznost
 
 ---
 
@@ -188,7 +191,7 @@ Aplikacija dolazi sa seed podacima:
 
 ---
 
-## 🎨 Code Style (Pint)
+## Code Style (Pint)
 
 ```bash
 # Automatsko formatiranje
@@ -200,7 +203,7 @@ php ./vendor/bin/pint --test
 
 ---
 
-## 🔄 Blueprint Code Generation
+## Blueprint Code Generation
 
 Projekat koristi **Laravel Blueprint** za generisanje modela, migracija i factory-ja.
 
@@ -219,26 +222,13 @@ php artisan blueprint:build
 
 ---
 
-## 📊 GitHub Actions CI/CD
+## GitHub Actions CI/CD
 
 CI pipeline automatski pokreće:
-- ✅ PHPUnit testove
-- ✅ Laravel Pint code style proveru
-- ✅ Database migracije i seed
+- PHPUnit testove
+- Laravel Pint code style proveru
+- Database migracije i seed
 
 Workflow se pokreće na:
 - Push na `main`/`master` branch
 - Pull request-ove
-
----
-
-## 👤 Autor
-
-**Nikola Zgonjanin**  
-Indeks: 77/22 IT
-
----
-
-## 📄 Licenca
-
-MIT License
