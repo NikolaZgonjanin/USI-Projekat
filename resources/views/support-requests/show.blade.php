@@ -18,11 +18,11 @@
             <p><span class="font-semibold">Status:</span> {{ ucfirst($supportRequest->status) }}</p>
             <p>
                 <span class="font-semibold">Prijavio:</span>
-                {{ $supportRequest->author->name }} ({{ $supportRequest->created_at?->format('d.m.Y. H:i') }})
+                {{ $supportRequest->createdBy?->name ?? 'Nepoznato' }} ({{ $supportRequest->created_at?->format('d.m.Y. H:i') }})
             </p>
             <p>
                 <span class="font-semibold">Dodeljen inženjer:</span>
-                {{ $supportRequest->assignee?->name ?? 'Nije dodeljen' }}
+                {{ $supportRequest->assignedTo?->name ?? 'Nije dodeljen' }}
             </p>
             <div class="mt-3">
                 <h3 class="font-semibold mb-1">Opis problema</h3>

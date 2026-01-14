@@ -41,17 +41,17 @@ class SupportRequest extends Model
      * Korisnik koji je kreirao prijavu.
      * Ovu relaciju koristimo pod imenom createdBy u kontroleru i view-ovima.
      */
-    public function createdBy(): BelongsTo
+    public function createdBy(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(\App\Models\User::class, 'created_by');
     }
 
     /**
      * Inženjer dodeljen na prijavu (može biti null).
      * Ovu relaciju koristimo pod imenom assignedTo u kontroleru i view-ovima.
      */
-    public function assignedTo(): BelongsTo
+    public function assignedTo(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(User::class, 'assigned_to');
+        return $this->belongsTo(\App\Models\User::class, 'assigned_to');
     }
 }

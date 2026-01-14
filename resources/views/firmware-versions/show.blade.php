@@ -72,7 +72,7 @@
                     <div>
                         <div class="font-semibold">{{ $request->title }}</div>
                         <div class="text-sm text-gray-600">
-                            Status: {{ ucfirst($request->status) }} · Prijavio: {{ $request->author->name }}
+                            Status: {{ ucfirst($request->status) }} · Prijavio: {{ $request->createdBy?->name ?? 'Nepoznato' }}
                         </div>
                     </div>
                     <a href="{{ route('support-requests.show', $request) }}"
