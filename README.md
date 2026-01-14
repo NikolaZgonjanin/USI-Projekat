@@ -148,7 +148,7 @@ php artisan test --filter FirmwareVersionTest
 
 ---
 
-## 💻 Instalacija i pokretanje
+## Instalacija i pokretanje
 
 ### Preduslovi
 - PHP 8.2+
