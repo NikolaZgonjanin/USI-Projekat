@@ -10,6 +10,11 @@ jobs:
   tests-and-lint:
     runs-on: ubuntu-latest
 
+    env:
+      APP_ENV: testing
+      DB_CONNECTION: sqlite
+      DB_DATABASE: database/database.sqlite
+
     steps:
       - name: Checkout koda
         uses: actions/checkout@v4
@@ -18,7 +23,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
-          extensions: mbstring, dom, fileinfo, sqlite
+          extensions: mbstring, dom, fileinfo, sqlite, pdo_sqlite
           coverage: none
 
       - name: Keširaj Composer pakete
@@ -32,13 +37,18 @@ jobs:
       - name: Instaliraj PHP zavisnosti
         run: composer install --no-progress --prefer-dist --no-interaction
 
-      - name: Pripremi .env i bazu
+      - name: Pripremi okruženje
         run: |
-          cp .env.example .env
-          php artisan key:generate
+          cp .env.example .env || true
+          php artisan key:generate --ansi
+
+      - name: Pripremi bazu
+        run: |
           mkdir -p database
           touch database/database.sqlite
-          php artisan migrate:fresh --seed
+
+      - name: Pokreni migracije i seed
+        run: php artisan migrate:fresh --seed --force
 
       - name: Pokreni testove
         run: php artisan test
