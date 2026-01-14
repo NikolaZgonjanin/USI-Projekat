@@ -44,14 +44,19 @@
                                 @endswitch
                             </td>
                             <td class="px-4 py-2 text-sm text-gray-900 text-right space-x-2">
-                                <a href="{{ route('users.edit', $user) }}" class="text-indigo-600 hover:underline">Izmeni</a>
-
+                                <a href="{{ route('users.edit', $user) }}"
+                                   class="text-indigo-600 font-semibold hover:underline">
+                                    Izmeni
+                                </a>
                                 @if(auth()->id() !== $user->id)
                                     <form action="{{ route('users.destroy', $user) }}" method="POST" class="inline-block"
                                           onsubmit="return confirm('Da li ste sigurni da želite da obrišete korisnika?');">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:underline">Obriši</button>
+                                        <button type="submit"
+                                                class="inline-flex items-center px-3 py-1 bg-red-600 text-white text-xs font-semibold rounded-md hover:bg-red-700">
+                                            Obriši
+                                        </button>
                                     </form>
                                 @endif
                             </td>
