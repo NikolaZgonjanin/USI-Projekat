@@ -1,235 +1,133 @@
-# Informacioni sistem za upravljanje firmverom
+# 🔧 Firmware Management System
 
-Ovaj projekat predstavlja Laravel veb aplikaciju za kompaniju koja razvija firmver i softver za ugrađene sisteme.  
-Cilj sistema je da omogući:
+> Laravel veb aplikacija za upravljanje verzijama firmvera i prijavama grešaka
 
-- **Evidenciju verzija firmvera i projekata**
-- **Pregled i preuzimanje stabilnih verzija firmvera**
-- **Vođenje prijava grešaka (support zahteva)**
-- **Upravljanje korisnicima i ulogama (administrator, inženjer, klijent)**
+[![Laravel](https://img.shields.io/badge/Laravel-12.x-red.svg)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.2+-blue.svg)](https://php.net)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Tests](https://img.shields.io/badge/tests-30%20passed-brightgreen.svg)](tests)
 
-## Tehnologije i alati
+---
 
-Aplikacija je izrađena koristeći:
+## 📋 O projektu
 
-- **Laravel 12** - PHP web okvir
-- **Laravel Breeze** - autentifikacija i osnovni UI scaffolding
-- **SQLite** - baza podataka za lokalni razvoj i testiranje
-- **Blade** - templating engine za korisnički interfejs
-- **Laravel Blueprint** - generisanje modela, migracija i factory-ja
-- **Laravel Pint** - code style fixer
-- **PHPUnit** - testiranje
-- **GitHub Actions** - CI/CD pipeline
+Sistem za upravljanje firmver verzijama i prijavama grešaka, razvijen za kompaniju koja proizvodi firmver za klijente. Aplikacija omogućava evidenciju verzija, preuzimanje firmvera, vođenje prijava grešaka i upravljanje korisnicima sa različitim ulogama.
 
-## GitHub repozitorijum
+### ✨ Ključne funkcionalnosti
 
-**Link:** [GitHub Repo URL - dodati nakon push-a na GitHub]
+- 👥 **Upravljanje korisnicima** - Administratori mogu kreirati, uređivati i brisati korisnike sa različitim ulogama
+- 📦 **Upravljanje projektima** - Kreiranje i upravljanje projektima firmvera
+- 🔄 **Verzije firmvera** - Dodavanje novih verzija, praćenje changelog-a i stabilnosti
+- 🐛 **Prijave grešaka** - Sistem za prijavu i praćenje problema sa firmver verzijama
+- 🔐 **Autorizacija** - Role-based access control (RBAC) sa tri uloge: administrator, inženjer, klijent
+- 📥 **Preuzimanje firmvera** - Download funkcionalnost za stabilne verzije
 
-Repozitorijum sadrži kompletnu istoriju commit-ova sa jasno definisanim fazama razvoja.
+---
 
-## Struktura projekta
+## 🛠️ Tehnologije
 
-### Modeli (4 glavna + pivot)
+| Tehnologija | Verzija | Svrha |
+|------------|---------|-------|
+| **Laravel** | 12.x | PHP web framework |
+| **Laravel Breeze** | 2.3+ | Autentifikacija i UI scaffolding |
+| **SQLite** | - | Baza podataka |
+| **Blade** | - | Templating engine |
+| **Laravel Blueprint** | 2.13+ | Code generation |
+| **Laravel Pint** | 1.24+ | Code style fixer |
+| **PHPUnit** | 11.5+ | Testiranje |
+| **Tailwind CSS** | - | Styling |
 
-1. **User** - korisnici sistema (administrator, inženjer, klijent)
-2. **Project** - projekti firmvera
-3. **FirmwareVersion** - verzije firmvera po projektu
-4. **SupportRequest** - prijave grešaka/zahtevi za podršku
-5. **Documentation** - dodatna dokumentacija za verzije firmvera
-6. **UserProject** - pivot tabela za many-to-many vezu između korisnika i projekata
+---
 
-### Kontroleri (Resource CRUD)
+## 📁 Struktura projekta
 
-- `UserController` - upravljanje korisnicima (admin only)
-- `ProjectController` - upravljanje projektima
-- `FirmwareVersionController` - upravljanje verzijama firmvera
-- `SupportRequestController` - upravljanje prijavama grešaka
-
-### Use-case rute (3 komada)
-
-1. **UC1: Prijava problema** - `GET /firmware-versions/{firmwareVersion}/support/create` + `POST /support-requests`
-   - Klijenti i inženjeri mogu da prijave problem za određenu verziju firmvera
-   - Kreira se `SupportRequest` sa statusom `pending`
-
-2. **UC2: Dodavanje nove verzije firmvera** - `GET /projects/{project}/firmware/create` + `POST /firmware-versions`
-   - Inženjeri mogu da dodaju novu verziju firmvera projektu
-   - Validacija i autorizacija su implementirani
-
-3. **UC3: Download firmvera** - `GET /firmware-versions/{firmwareVersion}/download`
-   - Klijenti i inženjeri mogu da preuzmu stabilne verzije firmvera
-   - Koristi se `Storage::download()` sa simulacijom preko dummy fajla
-
-### Testovi
-
-Feature testovi su implementirani u:
-- `tests/Feature/SupportRequestTest.php` - testiranje prijave problema
-- `tests/Feature/FirmwareVersionTest.php` - testiranje dodavanja verzije
-
-**Ukupno:** 30 testova, 76 asercija (svi prolaze)
-
-## Blueprint generisanje
-
-Projekat koristi **Laravel Blueprint** za generisanje modela, migracija i factory-ja. 
-
-### Sadržaj `draft.yaml`:
-
-```yaml
-models:
-  Project:
-    name: string
-    code: string unique
-    description: text nullable
-    hasMany: FirmwareVersion
-
-  FirmwareVersion:
-    project_id: id foreign:projects
-    version: string
-    is_stable: boolean default:false
-    changelog: text nullable
-    file_path: string nullable
-    released_at: nullable timestamp
-    hasMany: Documentation, SupportRequest
-    belongsTo: Project
-
-  Documentation:
-    firmware_version_id: id foreign:firmware_versions
-    title: string
-    file_path: string nullable
-    description: text nullable
-    belongsTo: FirmwareVersion
-
-  SupportRequest:
-    firmware_version_id: id foreign:firmware_versions
-    created_by: id foreign:users
-    assigned_to: id foreign:users nullable
-    title: string
-    status: enum:pending,accepted,denied,closed default:pending
-    request_text: text
-    steps_to_reproduce: text nullable
-
-  UserProject:
-    user_id: id foreign:users
-    project_id: id foreign:projects
-    timestamps: true
-
-controllers:
-  # Resource kontroleri ce se dodavati u narednoj fazi rucno.
+```
+USI-Projekat/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/          # Resource kontroleri (User, Project, FirmwareVersion, SupportRequest)
+│   │   └── Requests/             # FormRequest validacije
+│   ├── Models/                    # Eloquent modeli (User, Project, FirmwareVersion, SupportRequest, Documentation, UserProject)
+│   ├── Policies/                 # Autorizacione policy klase
+│   └── Providers/                 # Service providers
+├── database/
+│   ├── migrations/                # Database migracije
+│   ├── seeders/                   # Database seederi (Users, Projects, FirmwareVersions, SupportRequests)
+│   └── factories/                 # Model factories
+├── resources/
+│   └── views/                     # Blade template-ovi
+│       ├── auth/                  # Login, register, password reset
+│       ├── components/            # Reusable Blade komponente
+│       ├── layouts/               # App layout i navigacija
+│       ├── projects/              # CRUD view-ovi za projekte
+│       ├── firmware-versions/     # CRUD view-ovi za verzije
+│       ├── support-requests/      # CRUD view-ovi za prijave
+│       └── users/                 # CRUD view-ovi za korisnike
+├── routes/
+│   ├── web.php                    # Web rute (resource + use-case rute)
+│   └── auth.php                   # Autentifikacione rute
+├── tests/
+│   ├── Feature/                   # Feature testovi (30 testova, 76 asercija)
+│   └── Unit/                      # Unit testovi
+├── .github/
+│   └── workflows/
+│       └── ci.yml                 # GitHub Actions CI/CD pipeline
+└── draft.yaml                     # Blueprint schema za code generation
 ```
 
-**Komanda za generisanje:**
-```bash
-php artisan blueprint:build
+---
+
+## 🗄️ Modeli i relacije
+
+### Glavni modeli
+
+| Model | Opis | Relacije |
+|-------|------|----------|
+| **User** | Korisnici sistema (admin/inženjer/klijent) | `belongsToMany(Project)`, `hasMany(SupportRequest)` |
+| **Project** | Projekti firmvera | `hasMany(FirmwareVersion)`, `belongsToMany(User)`, `hasManyThrough(SupportRequest)` |
+| **FirmwareVersion** | Verzije firmvera | `belongsTo(Project)`, `hasMany(SupportRequest, Documentation)` |
+| **SupportRequest** | Prijave grešaka | `belongsTo(FirmwareVersion)`, `belongsTo(User)` (created_by, assigned_to) |
+| **UserProject** | Pivot tabela za pristup projektima | `belongsTo(User, Project)` |
+
+---
+
+## 🚀 Use-case rute
+
+### UC1: Prijava problema
 ```
-
-## GitHub Actions CI
-
-CI workflow je konfigurisan u `.github/workflows/ci.yml` i pokreće se na svaki push i pull request.
-
-### Sadržaj CI workflow fajla:
-
-```yaml
-name: CI
-
-on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
-
-jobs:
-  tests-and-lint:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout koda
-        uses: actions/checkout@v4
-
-      - name: Postavi PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          extensions: mbstring, dom, fileinfo, sqlite
-          coverage: none
-
-      - name: Keširaj Composer pakete
-        uses: actions/cache@v4
-        with:
-          path: vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-
-
-      - name: Instaliraj PHP zavisnosti
-        run: composer install --no-progress --prefer-dist --no-interaction
-
-      - name: Pripremi .env i bazu
-        run: |
-          cp .env.example .env
-          php artisan key:generate
-          mkdir -p database
-          touch database/database.sqlite
-          php artisan migrate:fresh --seed
-
-      - name: Pokreni testove
-        run: php artisan test
-
-      - name: Pokreni Pint (code style)
-        run: php ./vendor/bin/pint --test
+GET  /firmware-versions/{firmwareVersion}/support/create
+POST /support-requests
 ```
+Klijenti i inženjeri mogu prijaviti problem za određenu verziju firmvera.
 
-## Šta je generisano alatom, a šta ručno
-
-### Generisano Blueprint-om:
-- Modeli: `Project`, `FirmwareVersion`, `Documentation`, `SupportRequest`, `UserProject`
-- Migracije: `create_projects_table`, `create_firmware_versions_table`, `create_documentations_table`, `create_support_requests_table`, `create_user_projects_table`
-- Factory-ji: `ProjectFactory`, `FirmwareVersionFactory`, `DocumentationFactory`, `SupportRequestFactory`, `UserProjectFactory`
-
-### Ručno pisano:
-- **User model** - proširen sa ulogama i relacijama (Authenticatable)
-- **Svi kontroleri** - `UserController`, `ProjectController`, `FirmwareVersionController`, `SupportRequestController`
-- **FormRequest klase** - validacija za sve CRUD operacije
-- **Policy klase** - `UserPolicy`, `ProjectPolicy`, `FirmwareVersionPolicy`, `SupportRequestPolicy`
-- **Rute** - sve resource rute i use-case rute
-- **Blade view-ovi** - svi CRUD view-ovi i forme
-- **Seedere** - `UsersSeeder` sa srpskim korisnicima
-- **Testovi** - feature testovi za use-case tokove
-- **CI workflow** - GitHub Actions konfiguracija
-
-### Generisano Laravel Breeze-om:
-- Autentifikacioni kontroleri (`Auth/*`)
-- Blade komponente i layout-ovi
-- Auth rute
-
-## Autorizacija i uloge
-
-Sistem podržava tri uloge korisnika:
-
-1. **Administrator** - pun pristup svim funkcionalnostima (CRUD korisnika, projekata, verzija, prijava)
-2. **Inženjer** - može da dodaje verzije firmvera, uređuje prijave grešaka, dodeljuje prijave sebi
-3. **Klijent** - može da pregleda projekte, preuzme firmver, prijavi problem
-
-Autorizacija je implementirana kroz **Policy klase** i **middleware** provere.
-
-## Pokretanje projekta
-
-```bash
-# Instalacija zavisnosti
-composer install
-npm install
-
-# Podešavanje okruženja
-cp .env.example .env
-php artisan key:generate
-
-# Migracije i seed
-php artisan migrate:fresh --seed
-
-# Pokretanje development servera
-php artisan serve
-npm run dev
+### UC2: Dodavanje nove verzije firmvera
 ```
+GET  /projects/{project}/firmware/create
+POST /firmware-versions
+```
+Inženjeri mogu dodati novu verziju firmvera projektu.
 
-## Testiranje
+### UC3: Preuzimanje firmvera
+```
+GET /firmware-versions/{firmwareVersion}/download
+```
+Klijenti i inženjeri mogu preuzeti stabilne verzije firmvera.
+
+---
+
+## 🔐 Autorizacija i uloge
+
+| Uloga | Dozvole |
+|-------|---------|
+| **Administrator** | Puni pristup svim funkcionalnostima (CRUD korisnika, projekata, verzija, prijava) |
+| **Inženjer** | Dodavanje verzija firmvera, uređivanje prijava grešaka, dodela prijava sebi |
+| **Klijent** | Pregled projekata, preuzimanje firmvera, prijava problema |
+
+Autorizacija je implementirana kroz **Laravel Policies** i **middleware** provere.
+
+---
+
+## 🧪 Testiranje
 
 ```bash
 # Pokretanje svih testova
@@ -240,7 +138,57 @@ php artisan test --filter SupportRequestTest
 php artisan test --filter FirmwareVersionTest
 ```
 
-## Code style (Pint)
+**Test statistika:**
+- ✅ 30 testova
+- ✅ 76 asercija
+- ✅ 100% prolaznost
+
+---
+
+## 💻 Instalacija i pokretanje
+
+### Preduslovi
+- PHP 8.2+
+- Composer
+- Node.js i npm
+
+### Koraci
+
+```bash
+# 1. Kloniraj repozitorijum
+git clone <repository-url>
+cd USI-Projekat
+
+# 2. Instaliraj PHP zavisnosti
+composer install
+
+# 3. Instaliraj Node zavisnosti
+npm install
+
+# 4. Podesi okruženje
+cp .env.example .env
+php artisan key:generate
+
+# 5. Pokreni migracije i seed
+php artisan migrate:fresh --seed
+
+# 6. Pokreni development server
+php artisan serve
+npm run dev
+```
+
+### Seed podaci
+
+Aplikacija dolazi sa seed podacima:
+- **1 administrator**: `marko.petrovic@raf.rs` / `password`
+- **2 inženjera**: `ana.jovanovic@raf.rs`, `stefan.nikolic@raf.rs` / `password`
+- **2 klijenta**: `milan.stojanovic@raf.rs`, `jovana.popovic@raf.rs` / `password`
+- **5 projekata** sa po 4 verzije firmvera
+- **5 prijava grešaka** sa različitim statusima
+
+---
+
+## 🎨 Code Style (Pint)
 
 ```bash
 # Automatsko formatiranje
@@ -250,32 +198,47 @@ composer pint
 php ./vendor/bin/pint --test
 ```
 
-## Screenshot-ovi aplikacije
+---
 
-Sledeći screenshot-ovi su dostupni u `/docs/screenshots/` direktorijumu:
+## 🔄 Blueprint Code Generation
 
-1. `01-login.png` - Login ekran
-2. `02-admin-users.png` - Admin panel - lista korisnika
-3. `03-projects-list.png` - Lista projekata
-4. `04-project-detail.png` - Detalj projekta sa verzijama
-5. `05-firmware-version.png` - Detalj verzije firmvera
-6. `06-support-request.png` - Prijava greške
-7. `07-create-firmware.png` - Forma za dodavanje nove verzije
+Projekat koristi **Laravel Blueprint** za generisanje modela, migracija i factory-ja.
 
-*Napomena: Screenshot-ovi će biti dodati nakon finalnog testiranja aplikacije.*
+```bash
+# Generisanje iz draft.yaml
+php artisan blueprint:build
+```
 
-## Commit istorija
+**Generisano Blueprint-om:**
+- Modeli: `Project`, `FirmwareVersion`, `Documentation`, `SupportRequest`, `UserProject`
+- Migracije: sve tabele osim `users`
+- Factory-ji: za sve generisane modele
 
-Projekat je razvijen iterativno sa sledećim commit-ovima:
+**Ručno pisano:**
+- Kontroleri, FormRequest klase, Policies, Blade view-ovi, Seederi, Testovi
 
-1. `Inicijalizacija Laravel projekta i osnovna podešavanja`
-2. `Autentifikacija i uloge korisnika (admin/inženjer/klijent)`
-3. `Blueprint generisanje modela/migracija i inicijalni modeli domena`
-4. `CRUD funkcionalnosti i resource kontroleri za glavne modele`
-5. `Implementirani use-case tokovi: prijava greške, nova verzija, download firmvera`
-6. `Feature testovi za ključne use-case tokove`
-7. `Pint i GitHub Actions CI (testovi + lint)`
+---
 
-## Licenca
+## 📊 GitHub Actions CI/CD
+
+CI pipeline automatski pokreće:
+- ✅ PHPUnit testove
+- ✅ Laravel Pint code style proveru
+- ✅ Database migracije i seed
+
+Workflow se pokreće na:
+- Push na `main`/`master` branch
+- Pull request-ove
+
+---
+
+## 👤 Autor
+
+**Nikola Zgonjanin**  
+Indeks: 77/22 IT
+
+---
+
+## 📄 Licenca
 
 MIT License
