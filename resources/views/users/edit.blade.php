@@ -77,10 +77,10 @@
                     <a href="{{ route('users.index') }}" class="px-4 py-2 text-sm text-gray-700 hover:underline">
                         Otkaži
                     </a>
-                    <button type="submit"
-                            class="px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-md hover:bg-indigo-700">
+
+                    <x-primary-button>
                         Sačuvaj izmene
-                    </button>
+                    </x-primary-button>
                 </div>
             </form>
         </div>
