@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -70,5 +72,29 @@ class User extends Authenticatable
     public function isClient(): bool
     {
         return $this->role === 'client';
+    }
+
+    /**
+     * Projekti kojima korisnik ima pristup (preko pivot tabele).
+     */
+    public function projects(): BelongsToMany
+    {
+        return $this->belongsToMany(Project::class, 'user_projects');
+    }
+
+    /**
+     * Prijave grešaka koje je korisnik kreirao.
+     */
+    public function createdSupportRequests(): HasMany
+    {
+        return $this->hasMany(SupportRequest::class, 'created_by');
+    }
+
+    /**
+     * Prijave grešaka koje su dodeljene korisniku (inženjeru).
+     */
+    public function assignedSupportRequests(): HasMany
+    {
+        return $this->hasMany(SupportRequest::class, 'assigned_to');
     }
 }

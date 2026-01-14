@@ -1,0 +1,155 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\StoreSupportRequestRequest;
+use App\Http\Requests\UpdateSupportRequestRequest;
+use App\Models\FirmwareVersion;
+use App\Models\SupportRequest;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
+
+class SupportRequestController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request): View
+    {
+        $user = $request->user();
+
+        if ($user->isAdmin()) {
+            $supportRequests = SupportRequest::with(['firmwareVersion.project', 'createdBy', 'assignedTo'])
+                ->latest()
+                ->paginate(15);
+        } elseif ($user->isEngineer()) {
+            // Inženjeri vide sve prijave za projekte kojima imaju pristup
+            $projectIds = $user->projects()->pluck('projects.id');
+            $firmwareVersionIds = FirmwareVersion::whereIn('project_id', $projectIds)->pluck('id');
+            $supportRequests = SupportRequest::whereIn('firmware_version_id', $firmwareVersionIds)
+                ->with(['firmwareVersion.project', 'createdBy', 'assignedTo'])
+                ->latest()
+                ->paginate(15);
+        } else {
+            // Klijenti vide samo svoje prijave
+            $supportRequests = $user->createdSupportRequests()
+                ->with(['firmwareVersion.project', 'createdBy', 'assignedTo'])
+                ->latest()
+                ->paginate(15);
+        }
+
+        return view('support-requests.index', compact('supportRequests'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create(Request $request): View
+    {
+        $user = $request->user();
+        $firmwareVersionId = $request->query('firmware_version_id');
+
+        // Klijenti i inženjeri mogu da kreiraju prijave
+        if ($user->isAdmin()) {
+            $firmwareVersions = FirmwareVersion::with('project')->get();
+        } else {
+            $projectIds = $user->projects()->pluck('projects.id');
+            $firmwareVersions = FirmwareVersion::whereIn('project_id', $projectIds)
+                ->with('project')
+                ->get();
+        }
+
+        return view('support-requests.create', compact('firmwareVersions', 'firmwareVersionId'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(StoreSupportRequestRequest $request): RedirectResponse
+    {
+        $supportRequest = SupportRequest::create([
+            'firmware_version_id' => $request->firmware_version_id,
+            'created_by' => $request->user()->id,
+            'title' => $request->title,
+            'request_text' => $request->request_text,
+            'steps_to_reproduce' => $request->steps_to_reproduce,
+            'status' => 'pending',
+        ]);
+
+        return redirect()->route('support-requests.show', $supportRequest)
+            ->with('success', 'Prijava greške je uspešno kreirana.');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(SupportRequest $supportRequest): View
+    {
+        $this->authorize('view', $supportRequest);
+
+        $supportRequest->load(['firmwareVersion.project', 'createdBy', 'assignedTo']);
+
+        // Za inženjere, učitaj sve inženjere za dodelu
+        $engineers = null;
+        if (auth()->user()?->isEngineer() || auth()->user()?->isAdmin()) {
+            $engineers = User::whereIn('role', ['engineer', 'administrator'])->get();
+        }
+
+        return view('support-requests.show', compact('supportRequest', 'engineers'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(SupportRequest $supportRequest): View
+    {
+        $this->authorize('update', $supportRequest);
+
+        $supportRequest->load(['firmwareVersion.project']);
+        $engineers = User::whereIn('role', ['engineer', 'administrator'])->get();
+
+        return view('support-requests.edit', compact('supportRequest', 'engineers'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(UpdateSupportRequestRequest $request, SupportRequest $supportRequest): RedirectResponse
+    {
+        $data = [
+            'title' => $request->title,
+            'request_text' => $request->request_text,
+            'steps_to_reproduce' => $request->steps_to_reproduce,
+        ];
+
+        // Samo inženjeri i admin mogu da menjaju status i assigned_to
+        if ($request->user()->isEngineer() || $request->user()->isAdmin()) {
+            if ($request->has('status')) {
+                $data['status'] = $request->status;
+            }
+            if ($request->has('assigned_to')) {
+                $data['assigned_to'] = $request->assigned_to;
+            }
+        }
+
+        $supportRequest->update($data);
+
+        return redirect()->route('support-requests.show', $supportRequest)
+            ->with('success', 'Prijava greške je uspešno ažurirana.');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(SupportRequest $supportRequest): RedirectResponse
+    {
+        $this->authorize('delete', $supportRequest);
+
+        $supportRequest->delete();
+
+        return redirect()->route('support-requests.index')
+            ->with('success', 'Prijava greške je uspešno obrisana.');
+    }
+}
