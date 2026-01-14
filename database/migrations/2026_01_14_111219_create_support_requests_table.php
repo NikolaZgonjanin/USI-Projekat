@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('created_by')->constrained('users');
             $table->foreignId('assigned_to')->nullable()->constrained('users');
             $table->string('title');
-            $table->enum('status', ["pending","accepted","denied","closed"])->default('pending');
+            $table->enum('status', ['pending', 'accepted', 'denied', 'closed'])->default('pending');
             $table->text('request_text');
             $table->text('steps_to_reproduce')->nullable();
             $table->timestamps();

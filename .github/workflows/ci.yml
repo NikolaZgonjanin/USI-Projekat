@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  tests-and-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout koda
+        uses: actions/checkout@v4
+
+      - name: Postavi PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, dom, fileinfo, sqlite
+          coverage: none
+
+      - name: Keširaj Composer pakete
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Instaliraj PHP zavisnosti
+        run: composer install --no-progress --prefer-dist --no-interaction
+
+      - name: Pripremi .env i bazu
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          mkdir -p database
+          touch database/database.sqlite
+          php artisan migrate:fresh --seed
+
+      - name: Pokreni testove
+        run: php artisan test
+
+      - name: Pokreni Pint (code style)
+        run: php ./vendor/bin/pint --test
+

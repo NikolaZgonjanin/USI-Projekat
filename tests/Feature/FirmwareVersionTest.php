@@ -21,7 +21,7 @@ class FirmwareVersionTest extends TestCase
         // Kreiranje test podataka
         $engineer = User::factory()->create(['role' => 'engineer']);
         $project = Project::factory()->create();
-        
+
         // Dodela projekta inženjeru
         $engineer->projects()->attach($project->id);
 
@@ -46,7 +46,7 @@ class FirmwareVersionTest extends TestCase
         $firmwareVersion = FirmwareVersion::where('project_id', $project->id)
             ->where('version', '1.2.1')
             ->first();
-        
+
         $response->assertRedirect(route('projects.show', $project));
         $response->assertSessionHas('success');
     }
@@ -58,7 +58,7 @@ class FirmwareVersionTest extends TestCase
     {
         $client = User::factory()->create(['role' => 'client']);
         $project = Project::factory()->create();
-        
+
         $client->projects()->attach($project->id);
 
         // Pokušaj dodavanja verzije
@@ -71,7 +71,7 @@ class FirmwareVersionTest extends TestCase
 
         // Provera da je zahtev odbijen (403)
         $response->assertStatus(403);
-        
+
         $this->assertDatabaseMissing('firmware_versions', [
             'project_id' => $project->id,
             'version' => '1.2.1',
@@ -85,7 +85,7 @@ class FirmwareVersionTest extends TestCase
     {
         $engineer = User::factory()->create(['role' => 'engineer']);
         $project = Project::factory()->create();
-        
+
         $engineer->projects()->attach($project->id);
 
         // Pokušaj dodavanja verzije bez obaveznih polja
@@ -96,7 +96,7 @@ class FirmwareVersionTest extends TestCase
 
         // Provera da validacija ne prolazi
         $response->assertSessionHasErrors(['version']);
-        
+
         $this->assertDatabaseMissing('firmware_versions', [
             'project_id' => $project->id,
         ]);

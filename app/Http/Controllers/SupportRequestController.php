@@ -73,12 +73,12 @@ class SupportRequestController extends Controller
         $firmwareVersion = FirmwareVersion::findOrFail($request->firmware_version_id);
 
         // Provera da li korisnik ima pristup projektu
-        if (!$user->isAdmin()) {
+        if (! $user->isAdmin()) {
             $hasAccess = $user->projects()
                 ->where('projects.id', $firmwareVersion->project_id)
                 ->exists();
-            
-            if (!$hasAccess) {
+
+            if (! $hasAccess) {
                 abort(403, 'Nemate pristup ovom projektu.');
             }
         }

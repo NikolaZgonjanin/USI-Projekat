@@ -25,7 +25,7 @@ class UpdateProjectRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', 'max:255'],
-            'code' => ['required', 'string', 'max:255', 'unique:projects,code,' . $projectId],
+            'code' => ['required', 'string', 'max:255', 'unique:projects,code,'.$projectId],
             'description' => ['nullable', 'string'],
         ];
     }

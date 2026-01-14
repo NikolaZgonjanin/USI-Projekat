@@ -18,7 +18,7 @@ class SupportRequestFactory extends Factory
             'created_by' => User::factory()->create()->created_by,
             'assigned_to' => User::factory()->create()->assigned_to,
             'title' => fake()->sentence(4),
-            'status' => fake()->randomElement(["pending","accepted","denied","closed"]),
+            'status' => fake()->randomElement(['pending', 'accepted', 'denied', 'closed']),
             'request_text' => fake()->text(),
             'steps_to_reproduce' => fake()->text(),
             'created_at' => fake()->dateTime(),

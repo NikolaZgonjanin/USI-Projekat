@@ -22,10 +22,10 @@ class SupportRequestTest extends TestCase
         // Kreiranje test podataka
         $client = User::factory()->create(['role' => 'client']);
         $project = Project::factory()->create();
-        
+
         // Dodela projekta klijentu
         $client->projects()->attach($project->id);
-        
+
         $firmwareVersion = FirmwareVersion::factory()->create([
             'project_id' => $project->id,
             'is_stable' => true,
@@ -51,7 +51,7 @@ class SupportRequestTest extends TestCase
         $supportRequest = SupportRequest::where('firmware_version_id', $firmwareVersion->id)
             ->where('created_by', $client->id)
             ->first();
-        
+
         $response->assertRedirect(route('support-requests.show', $supportRequest));
         $response->assertSessionHas('success');
     }
@@ -63,9 +63,9 @@ class SupportRequestTest extends TestCase
     {
         $client = User::factory()->create(['role' => 'client']);
         $project = Project::factory()->create();
-        
+
         // Klijent NIJE dodeljen projektu
-        
+
         $firmwareVersion = FirmwareVersion::factory()->create([
             'project_id' => $project->id,
         ]);
@@ -79,7 +79,7 @@ class SupportRequestTest extends TestCase
 
         // Provera da je prijava odbijena (403 ili validacija)
         $response->assertStatus(403);
-        
+
         $this->assertDatabaseMissing('support_requests', [
             'firmware_version_id' => $firmwareVersion->id,
             'created_by' => $client->id,
