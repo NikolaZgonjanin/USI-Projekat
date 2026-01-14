@@ -18,7 +18,8 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    // Umesto posebnog dashboard ekrana, koristimo listu projekata kao početni ekran nakon logina.
+    return redirect()->route('projects.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

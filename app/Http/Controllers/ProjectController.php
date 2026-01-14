@@ -19,15 +19,18 @@ class ProjectController extends Controller
     {
         $user = $request->user();
 
-        if ($user->isAdmin()) {
-            $projects = Project::withCount(['firmwareVersions', 'supportRequests'])->latest()->paginate(15);
-        } else {
-            // Klijenti i inženjeri vide samo projekte kojima su dodeljeni
-            $projects = $user->projects()
-                ->withCount(['firmwareVersions', 'supportRequests'])
-                ->latest()
-                ->paginate(15);
-        }
+        $baseQuery = $user->isAdmin()
+            ? Project::query()
+            : $user->projects();
+
+        $projects = $baseQuery
+            ->with(['firmwareVersions' => function ($query) {
+                // Učitaj verzije tako da prva u kolekciji bude najnovija (po datumu objave, pa po kreiranju)
+                $query->orderByDesc('released_at')->orderByDesc('created_at');
+            }])
+            ->withCount(['supportRequests'])
+            ->orderBy('name')
+            ->get();
 
         return view('projects.index', compact('projects'));
     }
