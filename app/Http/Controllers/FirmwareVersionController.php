@@ -8,6 +8,7 @@ use App\Models\FirmwareVersion;
 use App\Models\Project;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class FirmwareVersionController extends Controller
@@ -111,5 +112,22 @@ class FirmwareVersionController extends Controller
 
         return redirect()->route('projects.show', $projectId)
             ->with('success', 'Firmver verzija je uspešno obrisana.');
+    }
+
+    /**
+     * UC3: Download firmvera (simulacija preuzimanja).
+     */
+    public function download(FirmwareVersion $firmwareVersion)
+    {
+        $this->authorize('view', $firmwareVersion);
+
+        $path = $firmwareVersion->file_path ?? 'firmware/dummy.bin';
+
+        if (! Storage::exists($path)) {
+            // U slučaju da fajl ne postoji, vratimo 404 sa jasnom porukom na srpskom.
+            abort(404, 'Firmware fajl nije pronađen.');
+        }
+
+        return Storage::download($path, 'firmware-'.$firmwareVersion->version.'.bin');
     }
 }

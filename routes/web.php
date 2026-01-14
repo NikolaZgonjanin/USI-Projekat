@@ -28,11 +28,20 @@ Route::middleware('auth')->group(function () {
     // Projekti - svi autentifikovani korisnici mogu da vide projekte
     Route::resource('projects', ProjectController::class);
 
-    // Firmver verzije
-    Route::resource('firmware-versions', FirmwareVersionController::class);
+        // Firmver verzije
+        Route::resource('firmware-versions', FirmwareVersionController::class);
+        // UC2: Inženjer dodaje novu firmver verziju za konkretan projekat (GET forma)
+        Route::get('projects/{project}/firmware/create', [FirmwareVersionController::class, 'create'])
+            ->name('projects.firmware.create');
+        // UC3: Download firmvera
+        Route::get('firmware-versions/{firmwareVersion}/download', [FirmwareVersionController::class, 'download'])
+            ->name('firmware.download');
 
     // Prijave grešaka
-    Route::resource('support-requests', SupportRequestController::class);
+        Route::resource('support-requests', SupportRequestController::class);
+        // UC1: Prijava problema za određenu verziju firmvera (GET forma)
+        Route::get('firmware-versions/{firmwareVersion}/support/create', [SupportRequestController::class, 'create'])
+            ->name('firmware.support.create');
 });
 
 require __DIR__.'/auth.php';
