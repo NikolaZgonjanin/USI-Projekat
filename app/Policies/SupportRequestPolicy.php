@@ -25,15 +25,10 @@ class SupportRequestPolicy
             return true;
         }
 
-        // Inženjeri vide prijave za projekte kojima imaju pristup
-        if ($user->isEngineer()) {
-            return $user->projects()
-                ->where('projects.id', $supportRequest->firmwareVersion->project_id)
-                ->exists();
-        }
-
-        // Klijenti vide samo svoje prijave
-        return $supportRequest->created_by === $user->id;
+        // Inženjeri i klijenti vide prijave za projekte kojima imaju pristup
+        return $user->projects()
+            ->where('projects.id', $supportRequest->firmwareVersion->project_id)
+            ->exists();
     }
 
     /**
@@ -49,13 +44,15 @@ class SupportRequestPolicy
      */
     public function update(User $user, SupportRequest $supportRequest): bool
     {
-        // Inženjeri i admin mogu da menjaju sve prijave
+        // Inženjeri i admin mogu da menjaju status i dodelu za prijave projekata kojima imaju pristup
         if ($user->isEngineer() || $user->isAdmin()) {
-            return true;
+            return $user->projects()
+                ->where('projects.id', $supportRequest->firmwareVersion->project_id)
+                ->exists();
         }
 
-        // Autor može da menja svoje prijave
-        return $supportRequest->created_by === $user->id;
+        // Klijenti ne mogu da menjaju prijave (samo da vide)
+        return false;
     }
 
     /**

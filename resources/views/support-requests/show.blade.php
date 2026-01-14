@@ -36,7 +36,7 @@
             @endif
         </div>
 
-        @if($engineers)
+        @can('update', $supportRequest)
             <div class="bg-white shadow-sm sm:rounded-lg p-6">
                 <h3 class="text-lg font-semibold mb-3">Upravljanje prijavom (inženjer/admin)</h3>
                 <form method="POST" action="{{ route('support-requests.update', $supportRequest) }}">
@@ -77,7 +77,7 @@
                     </div>
                 </form>
             </div>
-        @endif
+        @endcan
     </div>
 </x-app-layout>
 
