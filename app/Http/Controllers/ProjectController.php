@@ -28,7 +28,10 @@ class ProjectController extends Controller
                 // Učitaj verzije tako da prva u kolekciji bude najnovija (po datumu objave, pa po kreiranju)
                 $query->orderByDesc('released_at')->orderByDesc('created_at');
             }])
-            ->withCount(['supportRequests'])
+            ->withCount(['supportRequests' => function ($query) {
+                // Ne računaj denied i closed prijave u broju
+                $query->whereNotIn('status', ['denied', 'closed']);
+            }])
             ->orderBy('name')
             ->get();
 

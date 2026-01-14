@@ -75,8 +75,8 @@
                                class="sr-only peer"
                                {{ $showHidden ?? false ? 'checked' : '' }}
                                onchange="window.location.href = '{{ route('firmware-versions.show', $firmwareVersion) }}?show_hidden=' + (this.checked ? '1' : '0')">
-                        <div class="w-16 h-9 bg-gray-300 rounded-full shadow-inner transition-colors duration-300 peer-checked:bg-emerald-400"></div>
-                        <div class="absolute left-1 top-1 w-7 h-7 bg-white rounded-full shadow-md transform transition-transform duration-300 peer-checked:translate-x-7"></div>
+                        <div class="w-14 h-8 bg-gray-300 rounded-full shadow-inner transition-colors duration-200 ease-in-out peer-checked:bg-green-500"></div>
+                        <div class="absolute left-0.5 top-0.5 w-7 h-7 bg-white rounded-full shadow-lg transform transition-transform duration-200 ease-in-out peer-checked:translate-x-6"></div>
                     </div>
                 </label>
             </div>
