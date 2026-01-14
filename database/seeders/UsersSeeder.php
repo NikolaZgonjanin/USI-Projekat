@@ -15,9 +15,9 @@ class UsersSeeder extends Seeder
     {
         // Administrator
         User::create([
-            'name' => 'Marko Petrović',
-            'username' => 'marko.petrovic',
-            'email' => 'marko.petrovic@raf.rs',
+            'name' => 'Nikola Zgonjanin',
+            'username' => 'nikola.zgonjanin',
+            'email' => 'nikola.zgonjanin@raf.rs',
             'password' => Hash::make('password'),
             'role' => 'administrator',
             'email_verified_at' => now(),
