@@ -43,6 +43,11 @@
                     @csrf
                     @method('PUT')
 
+                    {{-- Hidden polja sa trenutnim vrednostima za validaciju --}}
+                    <input type="hidden" name="title" value="{{ $supportRequest->title }}">
+                    <input type="hidden" name="request_text" value="{{ $supportRequest->request_text }}">
+                    <input type="hidden" name="steps_to_reproduce" value="{{ $supportRequest->steps_to_reproduce }}">
+
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-700">Status</label>
                         <select name="status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
