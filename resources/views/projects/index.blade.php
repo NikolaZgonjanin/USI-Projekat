@@ -26,51 +26,69 @@
         </div>
 
         <div class="bg-white shadow-sm sm:rounded-lg overflow-hidden">
-            <div class="grid grid-cols-12 px-4 py-3 bg-gray-50 text-xs font-semibold text-gray-600 uppercase">
-                <div class="col-span-5">Projekat</div>
-                <div class="col-span-2">Verzija</div>
-                <div class="col-span-3">Poslednje ažuriranje</div>
-                <div class="col-span-2 text-right">Prijave grešaka</div>
-            </div>
-
-            @forelse ($projects as $project)
-                @php
-                    $latestFirmware = $project->firmwareVersions->first();
-                    $bugCount = $project->support_requests_count ?? 0;
-                @endphp
-                <a href="{{ route('projects.show', $project) }}"
-                   class="block border-t border-gray-200 hover:bg-gray-50 transition">
-                    <div class="grid grid-cols-12 px-4 py-3 items-center text-sm text-gray-900">
-                        <div class="col-span-5">
-                            <span class="font-semibold text-indigo-700">{{ $project->name }}</span>
-                            <span class="ml-2 text-xs text-gray-500">{{ $project->code }}</span>
-                        </div>
-                        <div class="col-span-2">
-                            {{ $latestFirmware?->version ?? 'Nema verzije' }}
-                        </div>
-                        <div class="col-span-3">
-                            @if ($latestFirmware)
-                                {{ optional($latestFirmware->released_at ?? $latestFirmware->created_at)->diffForHumans() }}
-                            @else
-                                <span class="text-gray-400">Nema ažuriranja</span>
-                            @endif
-                        </div>
-                        <div class="col-span-2 text-right">
-                            @if ($bugCount === 0)
-                                <span class="text-xs text-green-600">Nema</span>
-                            @else
-                                <span class="text-xs font-semibold {{ $bugCount > 5 ? 'text-red-600' : 'text-orange-500' }}">
-                                    {{ $bugCount }}
-                                </span>
-                            @endif
-                        </div>
-                    </div>
-                </a>
-            @empty
-                <div class="px-4 py-6 text-center text-sm text-gray-500">
-                    Nema projekata.
-                </div>
-            @endforelse
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Projekat
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Verzija
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Poslednje ažuriranje
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Prijave grešaka
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @forelse ($projects as $project)
+                        @php
+                            $latestFirmware = $project->firmwareVersions->first();
+                            $bugCount = $project->support_requests_count ?? 0;
+                        @endphp
+                        <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location='{{ route('projects.show', $project) }}'">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                        {{ $project->name }}
+                                    </span>
+                                    <span class="ml-2 text-xs text-gray-500">{{ $project->code }}</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                {{ $latestFirmware?->version ?? 'Nema verzije' }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                @if ($latestFirmware)
+                                    {{ optional($latestFirmware->released_at ?? $latestFirmware->created_at)->diffForHumans() }}
+                                @else
+                                    <span class="text-gray-400">Nema ažuriranja</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                @if ($bugCount === 0)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        Nema
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $bugCount > 5 ? 'bg-red-100 text-red-800' : 'bg-orange-100 text-orange-800' }}">
+                                        {{ $bugCount }}
+                                    </span>
+                                @endif
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="px-6 py-6 text-center text-sm text-gray-500">
+                                Nema projekata.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
 </x-app-layout>
