@@ -21,12 +21,6 @@ jobs:
           extensions: mbstring, dom, fileinfo, sqlite
           coverage: none
 
-      - name: Postavi Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
       - name: Keširaj Composer pakete
         uses: actions/cache@v4
         with:
@@ -35,22 +29,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-php-
 
-      - name: Keširaj Node modulove
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: Instaliraj PHP zavisnosti
         run: composer install --no-progress --prefer-dist --no-interaction
-
-      - name: Instaliraj Node zavisnosti
-        run: npm ci
-
-      - name: Build frontend assets
-        run: npm run build
 
       - name: Pripremi .env i bazu
         run: |
