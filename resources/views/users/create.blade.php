@@ -64,6 +64,27 @@
                     @enderror
                 </div>
 
+                @if(isset($projects) && $projects->count())
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700">Pristup projektima</label>
+                        <select name="projects[]" multiple
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                            @foreach($projects as $project)
+                                <option value="{{ $project->id }}"
+                                    @selected(collect(old('projects', []))->contains($project->id))>
+                                    {{ $project->name }} ({{ $project->code }})
+                                </option>
+                            @endforeach
+                        </select>
+                        <p class="mt-1 text-xs text-gray-500">
+                            Držite Ctrl (Cmd na Mac-u) za izbor više projekata.
+                        </p>
+                        @error('projects')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                @endif
+
                 <div class="flex justify-end space-x-2">
                     <a href="{{ route('users.index') }}" class="px-4 py-2 text-sm text-gray-700 hover:underline">
                         Otkaži

@@ -28,6 +28,8 @@ class StoreUserRequest extends FormRequest
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'confirmed', Password::defaults()],
             'role' => ['required', 'in:administrator,engineer,client'],
+            'projects' => ['nullable', 'array'],
+            'projects.*' => ['integer', 'exists:projects,id'],
         ];
     }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\Project;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
@@ -30,7 +31,9 @@ class UserController extends Controller
     {
         $this->authorize('create', User::class);
 
-        return view('users.create');
+        $projects = Project::orderBy('name')->get();
+
+        return view('users.create', compact('projects'));
     }
 
     /**
@@ -45,6 +48,9 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
             'role' => $request->role,
         ]);
+
+        // Poveži korisnika sa projektima kojima ima pristup (ako su izabrani)
+        $user->projects()->sync($request->input('projects', []));
 
         return redirect()->route('users.index')
             ->with('success', 'Korisnik je uspešno kreiran.');
@@ -67,7 +73,9 @@ class UserController extends Controller
     {
         $this->authorize('update', $user);
 
-        return view('users.edit', compact('user'));
+        $projects = Project::orderBy('name')->get();
+
+        return view('users.edit', compact('user', 'projects'));
     }
 
     /**
@@ -87,6 +95,9 @@ class UserController extends Controller
         }
 
         $user->update($data);
+
+        // Ažuriraj projekte kojima korisnik ima pristup
+        $user->projects()->sync($request->input('projects', []));
 
         return redirect()->route('users.index')
             ->with('success', 'Korisnik je uspešno ažuriran.');
