@@ -1,2 +1,26 @@
+created:
+    - database/factories/ProjectFactory.php
+    - database/factories/FirmwareVersionFactory.php
+    - database/factories/DocumentationFactory.php
+    - database/factories/SupportRequestFactory.php
+    - database/factories/UserFactory.php
+    - database/factories/UserProjectFactory.php
+    - database/migrations/2026_01_14_111216_create_projects_table.php
+    - database/migrations/2026_01_14_111217_create_firmware_versions_table.php
+    - database/migrations/2026_01_14_111218_create_documentations_table.php
+    - database/migrations/2026_01_14_111219_create_support_requests_table.php
+    - database/migrations/2026_01_14_111220_create_users_table.php
+    - database/migrations/2026_01_14_111221_create_user_projects_table.php
+    - app/Models/Project.php
+    - app/Models/FirmwareVersion.php
+    - app/Models/Documentation.php
+    - app/Models/SupportRequest.php
+    - app/Models/User.php
+    - app/Models/UserProject.php
 models:
-    User: { name: string, email: string, email_verified_at: 'datetime nullable', password: string, remember_token: 'string nullable' }
+    User: { name: string, username: 'string unique', email: 'string unique', role: 'enum:administrator,engineer,client default:client', hasMany: SupportRequest, belongsToMany: Project }
+    Project: { name: string, code: 'string unique', description: 'text nullable', hasMany: FirmwareVersion }
+    FirmwareVersion: { project_id: 'id foreign:projects', version: string, is_stable: 'boolean default:false', changelog: 'text nullable', file_path: 'string nullable', released_at: 'nullable timestamp', hasMany: 'Documentation, SupportRequest', belongsTo: Project }
+    Documentation: { firmware_version_id: 'id foreign:firmware_versions', title: string, file_path: 'string nullable', description: 'text nullable', belongsTo: FirmwareVersion }
+    SupportRequest: { firmware_version_id: 'id foreign:firmware_versions', created_by: 'id foreign:users', assigned_to: 'id foreign:users nullable', title: string, status: 'enum:pending,accepted,denied,closed default:pending', request_text: text, steps_to_reproduce: 'text nullable', created_at: 'nullable timestamp', updated_at: 'nullable timestamp', belongsTo: 'FirmwareVersion, User' }
+    UserProject: { user_id: 'id foreign:users', project_id: 'id foreign:projects', timestamps: timestamps }

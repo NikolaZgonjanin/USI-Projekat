@@ -1,5 +1,42 @@
 models:
-  # ...
+  Project:
+    name: string
+    code: string unique
+    description: text nullable
+    # veza: jedan projekat - vise verzija firmvera
+    hasMany: FirmwareVersion
+
+  FirmwareVersion:
+    project_id: id foreign:projects
+    version: string
+    is_stable: boolean default:false
+    changelog: text nullable
+    file_path: string nullable
+    released_at: nullable timestamp
+    # veze: jedna verzija - vise dokumenata i vise prijava gresaka
+    hasMany: Documentation, SupportRequest
+    belongsTo: Project
+
+  Documentation:
+    firmware_version_id: id foreign:firmware_versions
+    title: string
+    file_path: string nullable
+    description: text nullable
+    belongsTo: FirmwareVersion
+
+  SupportRequest:
+    firmware_version_id: id foreign:firmware_versions
+    created_by: id foreign:users
+    assigned_to: id foreign:users nullable
+    title: string
+    status: enum:pending,accepted,denied,closed default:pending
+    request_text: text
+    steps_to_reproduce: text nullable
+
+  UserProject:
+    user_id: id foreign:users
+    project_id: id foreign:projects
+    timestamps: true
 
 controllers:
-  # ...
+  # Resource kontroleri ce se dodavati u narednoj fazi rucno.
