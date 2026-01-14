@@ -132,9 +132,22 @@ class FirmwareVersionController extends Controller
 
         $path = $firmwareVersion->file_path ?? 'firmware/dummy.bin';
 
+        // Ako fajl ne postoji, kreiraj dummy fajl
         if (! Storage::exists($path)) {
-            // U slučaju da fajl ne postoji, vratimo 404 sa jasnom porukom na srpskom.
-            abort(404, 'Firmware fajl nije pronađen.');
+            // Kreiraj direktorijum ako ne postoji
+            $directory = dirname($path);
+            if ($directory !== '.' && ! Storage::exists($directory)) {
+                Storage::makeDirectory($directory);
+            }
+
+            // Kreiraj dummy fajl sa sadržajem
+            $content = sprintf(
+                "Dummy firmware fajl za verziju %s\nProjekat: %s\nKreiran: %s",
+                $firmwareVersion->version,
+                $firmwareVersion->project->name,
+                now()->format('Y-m-d H:i:s')
+            );
+            Storage::put($path, $content);
         }
 
         return Storage::download($path, 'firmware-'.$firmwareVersion->version.'.bin');
