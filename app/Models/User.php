@@ -19,8 +19,10 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -44,5 +46,29 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Proverava da li je korisnik administrator.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'administrator';
+    }
+
+    /**
+     * Proverava da li je korisnik inženjer.
+     */
+    public function isEngineer(): bool
+    {
+        return $this->role === 'engineer';
+    }
+
+    /**
+     * Proverava da li je korisnik klijent.
+     */
+    public function isClient(): bool
+    {
+        return $this->role === 'client';
     }
 }
