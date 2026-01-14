@@ -27,8 +27,8 @@ class SupportRequest extends Model
             'firmware_version_id' => 'integer',
             'created_by' => 'integer',
             'assigned_to' => 'integer',
-            'created_at' => 'timestamp',
-            'updated_at' => 'timestamp',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
         ];
     }
 
