@@ -12,10 +12,9 @@ class ProjectFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'code' => fake()->word(),
+            'name' => fake()->words(2, true),
+            'code' => fake()->unique()->word(),
             'description' => fake()->text(),
-            'hasMany' => fake()->word(),
         ];
     }
 }

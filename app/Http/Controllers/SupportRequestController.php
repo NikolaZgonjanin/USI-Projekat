@@ -69,9 +69,23 @@ class SupportRequestController extends Controller
      */
     public function store(StoreSupportRequestRequest $request): RedirectResponse
     {
+        $user = $request->user();
+        $firmwareVersion = FirmwareVersion::findOrFail($request->firmware_version_id);
+
+        // Provera da li korisnik ima pristup projektu
+        if (!$user->isAdmin()) {
+            $hasAccess = $user->projects()
+                ->where('projects.id', $firmwareVersion->project_id)
+                ->exists();
+            
+            if (!$hasAccess) {
+                abort(403, 'Nemate pristup ovom projektu.');
+            }
+        }
+
         $supportRequest = SupportRequest::create([
             'firmware_version_id' => $request->firmware_version_id,
-            'created_by' => $request->user()->id,
+            'created_by' => $user->id,
             'title' => $request->title,
             'request_text' => $request->request_text,
             'steps_to_reproduce' => $request->steps_to_reproduce,

@@ -14,13 +14,11 @@ class FirmwareVersionFactory extends Factory
     {
         return [
             'project_id' => Project::factory(),
-            'version' => fake()->word(),
+            'version' => fake()->numerify('#.#.#'),
             'is_stable' => fake()->boolean(),
             'changelog' => fake()->text(),
-            'file_path' => fake()->word(),
-            'released_at' => fake()->dateTime(),
-            'hasMany' => fake()->word(),
-            'belongsTo' => fake()->word(),
+            'file_path' => 'firmware/dummy.bin',
+            'released_at' => fake()->optional()->dateTime(),
         ];
     }
 }
