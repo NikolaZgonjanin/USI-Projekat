@@ -183,7 +183,7 @@ npm run dev
 ### Seed podaci
 
 Aplikacija dolazi sa seed podacima:
-- **1 administrator**: `marko.petrovic@raf.rs` / `password`
+- **1 administrator**: `nikola.zgonjanin@raf.rs` / `password`
 - **2 inženjera**: `ana.jovanovic@raf.rs`, `stefan.nikolic@raf.rs` / `password`
 - **2 klijenta**: `milan.stojanovic@raf.rs`, `jovana.popovic@raf.rs` / `password`
 - **5 projekata** sa po 4 verzije firmvera
