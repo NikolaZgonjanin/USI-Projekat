@@ -219,16 +219,3 @@ php artisan blueprint:build
 
 **Ručno pisano:**
 - Kontroleri, FormRequest klase, Policies, Blade view-ovi, Seederi, Testovi
-
----
-
-## GitHub Actions CI/CD
-
-CI pipeline automatski pokreće:
-- PHPUnit testove
-- Laravel Pint code style proveru
-- Database migracije i seed
-
-Workflow se pokreće na:
-- Push na `main`/`master` branch
-- Pull request-ove
