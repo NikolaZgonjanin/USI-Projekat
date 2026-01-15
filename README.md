@@ -159,7 +159,7 @@ php artisan test --filter FirmwareVersionTest
 
 ```bash
 # 1. Kloniraj repozitorijum
-git clone <repository-url>
+git clone git@github.com:NikolaZgonjanin/USI-Projekat.git
 cd USI-Projekat
 
 # 2. Instaliraj PHP zavisnosti
